@@ -1,20 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { Suspense } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import Main from './src/Main';
+import { extend } from '@react-three/fiber'
+import { OrbitControls, TransformControls } from 'three-stdlib'
+import SuspenseComp from './src/SuspenseComp';
+import 'react-native-gesture-handler'
+import { SensorType, useAnimatedSensor } from 'react-native-reanimated';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+extend({ OrbitControls, TransformControls })
+
+const animatedSensor: any = useAnimatedSensor(SensorType.GYROSCOPE, {
+  interval: 100,
+});
+
+  return <Canvas>
+    <Suspense fallback={<SuspenseComp/>} >
+      <Main sensor={animatedSensor} />   
+     </Suspense>
+
+     </Canvas>;
+
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
